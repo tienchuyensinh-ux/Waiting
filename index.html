@@ -1,98 +1,279 @@
 <!DOCTYPE html>
+
 <html lang="vi">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chờ đợi điều bất ngờ...</title>
+
+    <!-- Quan trọng nhất để tự động scale trên điện thoại -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Waiting for Surprise...</title>
+
     <style>
+
+        * { box-sizing: border-box; }
+
+        
+
         body {
+
             margin: 0;
-            height: 100vh;
+
+            padding: 20px;
+
+            min-height: 100vh;
+
             display: flex;
+
             flex-direction: column;
+
             justify-content: center;
+
             align-items: center;
+
             background: linear-gradient(135deg, #fceaf1 0%, #e8ddfc 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
             color: #d63384;
+
             text-align: center;
+
+            overflow: hidden;
+
         }
 
-        h1 { font-size: 2rem; margin-bottom: 20px; }
+
+
+        h1 { 
+
+            font-size: clamp(1.5rem, 5vw, 2.5rem); 
+
+            margin-bottom: 30px;
+
+            padding: 0 10px;
+
+        }
+
+
 
         #countdown {
-            display: flex;
-            gap: 20px;
-            font-weight: bold;
+
+            display: grid;
+
+            /* Tự động chia 2 cột trên điện thoại nhỏ, 4 cột trên màn hình lớn */
+
+            grid-template-columns: repeat(2, 1fr);
+
+            gap: 15px;
+
+            width: 100%;
+
+            max-width: 500px;
+
         }
+
+
+
+        @media (min-width: 480px) {
+
+            #countdown {
+
+                grid-template-columns: repeat(4, 1fr);
+
+            }
+
+        }
+
+
 
         .time-box {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            min-width: 80px;
+
+            background: rgba(255, 255, 255, 0.9);
+
+            padding: 20px 10px;
+
+            border-radius: 20px;
+
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+
+            backdrop-filter: blur(5px);
+
         }
 
-        .number { font-size: 2.5rem; display: block; color: #8a2be2; }
-        .label { font-size: 0.8rem; text-transform: uppercase; color: #999; }
 
-        .message { margin-top: 30px; font-style: italic; color: #666; }
+
+        .number { 
+
+            font-size: clamp(2rem, 8vw, 3rem); 
+
+            display: block; 
+
+            color: #8a2be2;
+
+            font-weight: 800;
+
+            line-height: 1;
+
+            margin-bottom: 5px;
+
+        }
+
+
+
+        .label { 
+
+            font-size: 0.75rem; 
+
+            text-transform: uppercase; 
+
+            color: #888;
+
+            letter-spacing: 1px;
+
+        }
+
+
+
+        .message { 
+
+            margin-top: 40px; 
+
+            font-size: 1.1rem;
+
+            color: #666;
+
+            animation: pulse 2s infinite;
+
+        }
+
+
+
+        @keyframes pulse {
+
+            0% { opacity: 0.5; }
+
+            50% { opacity: 1; }
+
+            100% { opacity: 0.5; }
+
+        }
+
     </style>
+
 </head>
+
 <body>
 
-    <h1>Món quà bí mật sẽ xuất hiện sau...</h1>
+
+
+    <h1>Món quà sẽ xuất hiện sau...</h1>
+
+
 
     <div id="countdown">
+
         <div class="time-box">
+
             <span class="number" id="days">00</span>
+
             <span class="label">Ngày</span>
+
         </div>
+
         <div class="time-box">
+
             <span class="number" id="hours">00</span>
+
             <span class="label">Giờ</span>
+
         </div>
+
         <div class="time-box">
+
             <span class="number" id="minutes">00</span>
+
             <span class="label">Phút</span>
+
         </div>
+
         <div class="time-box">
+
             <span class="number" id="seconds">00</span>
+
             <span class="label">Giây</span>
+
         </div>
+
     </div>
+
+
 
     <p class="message">Anh iu ráng chờ nhoaa ❤️</p>
 
-    <script>
-        // --- CẤU HÌNH Ở ĐÂY ---
-        const targetDate = new Date("May 16, 2026 00:00:00").getTime(); // Ngày sinh nhật
-        const redirectUrl = "https://tienchuyensinh-ux.github.io/Dating/"; // Link invitation của bạn
-        // ----------------------
 
-        const timer = setInterval(function() {
+
+    <script>
+
+        // Cấu hình thời gian và link của bạn
+
+        const targetDate = new Date("May 16, 2026 00:00:00").getTime(); 
+
+        const redirectUrl = "https://tienchuyensinh-ux.github.io/Dating/"; 
+
+
+
+        function updateCountdown() {
+
             const now = new Date().getTime();
+
             const distance = targetDate - now;
 
-            // Tính toán thời gian
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // Hiển thị kết quả
-            document.getElementById("days").innerText = days < 10 ? "0"+days : days;
-            document.getElementById("hours").innerText = hours < 10 ? "0"+hours : hours;
-            document.getElementById("minutes").innerText = minutes < 10 ? "0"+minutes : minutes;
-            document.getElementById("seconds").innerText = seconds < 10 ? "0"+seconds : seconds;
 
-            // Nếu đếm ngược kết thúc
             if (distance < 0) {
-                clearInterval(timer);
-                window.location.href = redirectUrl; // Nhảy sang link invitation
+
+                document.body.innerHTML = "<h1>Đang chuyển hướng tới món quà...</h1>";
+
+                window.location.href = redirectUrl;
+
+                return;
+
             }
-        }, 1000);
+
+
+
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+
+
+            document.getElementById("days").innerText = d < 10 ? "0"+d : d;
+
+            document.getElementById("hours").innerText = h < 10 ? "0"+h : h;
+
+            document.getElementById("minutes").innerText = m < 10 ? "0"+m : m;
+
+            document.getElementById("seconds").innerText = s < 10 ? "0"+s : s;
+
+        }
+
+
+
+        setInterval(updateCountdown, 1000);
+
+        updateCountdown(); // Chạy ngay lập tức khi load trang
+
     </script>
+
 </body>
+
 </html>
