@@ -1,279 +1,191 @@
 <!DOCTYPE html>
-
 <html lang="vi">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <!-- Quan trọng nhất để tự động scale trên điện thoại -->
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <title>Waiting for Surprise...</title>
-
+    <title>Món quà bất ngờ của Công chúa</title>
     <style>
-
         * { box-sizing: border-box; }
-
-        
-
         body {
-
-            margin: 0;
-
-            padding: 20px;
-
-            min-height: 100vh;
-
-            display: flex;
-
-            flex-direction: column;
-
-            justify-content: center;
-
-            align-items: center;
-
+            margin: 0; padding: 20px; min-height: 100vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             background: linear-gradient(135deg, #fceaf1 0%, #e8ddfc 100%);
-
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-
-            color: #d63384;
-
-            text-align: center;
-
-            overflow: hidden;
-
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            color: #d63384; text-align: center; overflow-x: hidden;
         }
 
+        /* Countdown Style */
+        #countdown-section { display: flex; flex-direction: column; align-items: center; }
+        #countdown { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 500px; }
+        @media (min-width: 480px) { #countdown { grid-template-columns: repeat(4, 1fr); } }
+        .time-box { background: rgba(255, 255, 255, 0.9); padding: 20px 10px; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .number { font-size: clamp(2rem, 8vw, 3rem); display: block; color: #8a2be2; font-weight: 800; }
+        .label { font-size: 0.75rem; text-transform: uppercase; color: #888; }
 
+        /* Game Style */
+        .gift-box { cursor: pointer; transition: transform 0.3s; margin: 10px; width: 150px; }
+        .gift-box:hover { transform: scale(1.1); }
+        .gift-box img { width: 150px; height: 150px; object-fit: cover; border-radius: 15px; border: 3px solid #ff4d94; }
 
-        h1 { 
-
-            font-size: clamp(1.5rem, 5vw, 2.5rem); 
-
-            margin-bottom: 30px;
-
-            padding: 0 10px;
-
+        .btn {
+            padding: 15px 30px; background: linear-gradient(to right, #ff4d94, #ff85a2);
+            border-radius: 30px; text-decoration: none; color: white; font-weight: bold;
+            border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 77, 148, 0.4);
+            display: inline-block; margin-top: 20px;
         }
 
-
-
-        #countdown {
-
-            display: grid;
-
-            /* Tự động chia 2 cột trên điện thoại nhỏ, 4 cột trên màn hình lớn */
-
-            grid-template-columns: repeat(2, 1fr);
-
-            gap: 15px;
-
-            width: 100%;
-
-            max-width: 500px;
-
-        }
-
-
-
-        @media (min-width: 480px) {
-
-            #countdown {
-
-                grid-template-columns: repeat(4, 1fr);
-
-            }
-
-        }
-
-
-
-        .time-box {
-
-            background: rgba(255, 255, 255, 0.9);
-
-            padding: 20px 10px;
-
-            border-radius: 20px;
-
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-
-            backdrop-filter: blur(5px);
-
-        }
-
-
-
-        .number { 
-
-            font-size: clamp(2rem, 8vw, 3rem); 
-
-            display: block; 
-
-            color: #8a2be2;
-
-            font-weight: 800;
-
-            line-height: 1;
-
-            margin-bottom: 5px;
-
-        }
-
-
-
-        .label { 
-
-            font-size: 0.75rem; 
-
-            text-transform: uppercase; 
-
-            color: #888;
-
-            letter-spacing: 1px;
-
-        }
-
-
-
-        .message { 
-
-            margin-top: 40px; 
-
-            font-size: 1.1rem;
-
-            color: #666;
-
-            animation: pulse 2s infinite;
-
-        }
-
-
-
-        @keyframes pulse {
-
-            0% { opacity: 0.5; }
-
-            50% { opacity: 1; }
-
-            100% { opacity: 0.5; }
-
-        }
-
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 1s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .result-box { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin: 20px auto; }
     </style>
-
 </head>
-
 <body>
 
-
-
-    <h1>Món quà sẽ xuất hiện sau...</h1>
-
-
-
-    <div id="countdown">
-
-        <div class="time-box">
-
-            <span class="number" id="days">00</span>
-
-            <span class="label">Ngày</span>
-
+    <div id="countdown-section">
+        <h1>Món quà sẽ xuất hiện sau...</h1>
+        <div id="countdown">
+            <div class="time-box"><span class="number" id="days">00</span><span class="label">Ngày</span></div>
+            <div class="time-box"><span class="number" id="hours">00</span><span class="label">Giờ</span></div>
+            <div class="time-box"><span class="number" id="minutes">00</span><span class="label">Phút</span></div>
+            <div class="time-box"><span class="number" id="seconds">00</span><span class="label">Giây</span></div>
         </div>
-
-        <div class="time-box">
-
-            <span class="number" id="hours">00</span>
-
-            <span class="label">Giờ</span>
-
-        </div>
-
-        <div class="time-box">
-
-            <span class="number" id="minutes">00</span>
-
-            <span class="label">Phút</span>
-
-        </div>
-
-        <div class="time-box">
-
-            <span class="number" id="seconds">00</span>
-
-            <span class="label">Giây</span>
-
-        </div>
-
+        <p style="margin-top: 30px;">Anh iu ráng chờ nhoaa ❤️</p>
     </div>
 
+    <div id="game-section" class="hidden fade-in">
+        <h2 id="game-title">Ú oà! Chọn một hộp quà đi nè! 🎁</h2>
+        <div id="gift-container" style="display: flex; justify-content: center; flex-wrap: wrap;">
+            
+            <div class="gift-box" onclick="openGift('special')">
+                <img src="https://lh3.googleusercontent.com/u/0/d/1G0DwY94CEBe_IFhP6jrkMgbNEgAtgWtY" alt="Bé Iu">
+                <p>Hộp Bé Iu</p>
+            </div>
 
+            <div class="gift-box" onclick="openGift('cafe')">
+                <img src="https://lh3.googleusercontent.com/u/0/d/1Av9dcycDdD28m_2kjJQ5MtaTFhs4-dPh" alt="A Iu">
+                <p>Hộp A Iu</p>
+            </div>
 
-    <p class="message">Anh iu ráng chờ nhoaa ❤️</p>
+            <div class="gift-box" onclick="openGift('video_loichuc')">
+                <img src="https://lh3.googleusercontent.com/u/0/d/1RsQhLn-ErPTJWXctYXCXjr1BiaqGUr6x" alt="Con Gái Iu">
+                <p>Hộp Con Gái Iu</p>
+            </div>
+        </div>
 
+        <div id="sub-result" class="hidden result-box fade-in">
+            <h3 id="result-text" style="color: #d82d8b;"></h3>
+            
+            <div id="video-bonus" class="hidden">
+                <video id="bonusVid" width="280" controls style="border-radius: 10px; margin-top: 10px;">
+                    <source src="https://media.discordapp.net/attachments/1504303049232093236/1504304181954220073/Tikviewer_share_with_someone_who_has_a_birthday__foryou_anim_1778682161691_1.mp4?ex=6a067ff1&is=6a052e71&hm=fcf8dfa4d15d4ecd55886af9bd5b7c2bcd742c9f8e60ac1e7da7ebc46b3be3b2&" type="video/mp4">
+                </video>
+                <p style="font-style: italic; color: #d63384; font-weight: 500; margin-top: 15px;">
+                    "Chúc ba luôn đẹp trai và thương hai mẹ con nhoa. Ba kiếm nhiều xiền mua topping gà cho tấm nữa"
+                </p>
+            </div>
+            
+            <button id="btn-back-generic" class="btn" onclick="goBack()">Chọn lại cái khác hịn hơn i a</button>
+        </div>
+    </div>
 
+    <div id="reward-section" class="hidden fade-in result-box">
+        <h2 style="color: #ff1493;">🎉 GIẢI ĐẶC BIỆT: Món quà vô giá! 🎉</h2>
+        <video id="myVideo" width="280" controls style="border-radius: 15px;">
+            <source src="https://cdn.discordapp.com/attachments/1504303049232093236/1504314237823090738/lv_7578701226179595528_20260513222302.mp4?ex=6a06894f&is=6a0537cf&hm=b37b4a1217958206d7a92b4ead76ce9b6c9f3281e326fe0fa3d57c127f42d037&" type="video/mp4">
+        </video>
+    </div>
+
+    <div id="final-step" class="hidden fade-in" style="margin-top: 30px; padding-bottom: 50px;">
+        <p style="font-style: italic; font-size: 1.2rem; color: #d63384;">"Anh nghĩ tới đây là hết rồi đúng hông? 😉"</p>
+        <a href="https://tienchuyensinh-ux.github.io/Dating/" class="btn">Bấm vào đây để biết sự thật nè!</a>
+    </div>
+
+    <audio id="audio-success" src="https://www.myinstants.com/media/sounds/success-fanfare-trumpets.mp3"></audio>
 
     <script>
-
-        // Cấu hình thời gian và link của bạn
-
         const targetDate = new Date("May 16, 2026 00:00:00").getTime(); 
 
-        const redirectUrl = "https://tienchuyensinh-ux.github.io/Dating/"; 
-
-
-
         function updateCountdown() {
-
             const now = new Date().getTime();
-
             const distance = targetDate - now;
+            const countdownSection = document.getElementById('countdown-section');
+            const gameSection = document.getElementById('game-section');
 
-
-
-            if (distance < 0) {
-
-                document.body.innerHTML = "<h1>Đang chuyển hướng tới món quà...</h1>";
-
-                window.location.href = redirectUrl;
-
+            if (distance <= 0) {
+                countdownSection.classList.add('hidden');
+                gameSection.classList.remove('hidden');
                 return;
-
             }
 
-
-
             const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-
             const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
             const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-
             const s = Math.floor((distance % (1000 * 60)) / 1000);
 
-
-
             document.getElementById("days").innerText = d < 10 ? "0"+d : d;
-
             document.getElementById("hours").innerText = h < 10 ? "0"+h : h;
-
             document.getElementById("minutes").innerText = m < 10 ? "0"+m : m;
-
             document.getElementById("seconds").innerText = s < 10 ? "0"+s : s;
-
         }
 
+        function openGift(type) {
+            const giftContainer = document.getElementById('gift-container');
+            const subResult = document.getElementById('sub-result');
+            const rewardSection = document.getElementById('reward-section');
+            const resultText = document.getElementById('result-text');
+            const videoBonus = document.getElementById('video-bonus');
+            const btnBack = document.getElementById('btn-back-generic');
+            const audioSuccess = document.getElementById('audio-success');
 
+            giftContainer.classList.add('hidden');
+            subResult.classList.add('hidden');
+            rewardSection.classList.add('hidden');
+            document.getElementById('final-step').classList.add('hidden'); // Ẩn nút cuối nếu quay lại
+
+            if (type === 'special') {
+                audioSuccess.play();
+                rewardSection.classList.remove('hidden');
+                // Hộp Bé Iu không có nút "Chọn lại"
+            } else if (type === 'cafe') {
+                audioSuccess.play();
+                subResult.classList.remove('hidden');
+                videoBonus.classList.add('hidden');
+                btnBack.classList.remove('hidden'); // Cafe thì cho quay lại chọn cái khác hịn hơn
+                resultText.innerHTML = "☕️ PHẦN THƯỞNG: 1 ly cafe/nước bất kỳ trong ngày đặc biệt của A Iu!<br><small>(Liên hệ Bé Iu để nhận quà nha!)</small>";
+            } else if (type === 'video_loichuc') {
+                audioSuccess.play();
+                subResult.classList.remove('hidden');
+                videoBonus.classList.remove('hidden');
+                btnBack.classList.remove('hidden'); 
+                resultText.innerText = "🎬 Quà tặng từ Con Gái Iu!";
+            }
+        }
+
+        function goBack() {
+            document.getElementById('gift-container').classList.remove('hidden');
+            document.getElementById('sub-result').classList.add('hidden');
+            document.getElementById('reward-section').classList.add('hidden');
+        }
+
+        // KHI VIDEO KẾT THÚC
+        function onVideoEnd() {
+            // Hiện nút sự thật
+            const finalStep = document.getElementById('final-step');
+            finalStep.classList.remove('hidden');
+            
+            // Ẩn nút "Chọn lại" nếu đang ở màn hình phụ
+            document.getElementById('btn-back-generic').classList.add('hidden');
+            
+            // Focus cuộn xuống
+            finalStep.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('bonusVid').onended = onVideoEnd;
+        document.getElementById('myVideo').onended = onVideoEnd;
 
         setInterval(updateCountdown, 1000);
-
-        updateCountdown(); // Chạy ngay lập tức khi load trang
-
+        updateCountdown();
     </script>
-
 </body>
-
 </html>
